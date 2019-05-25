@@ -44,12 +44,12 @@ function StripOrders(e, orderId) {
             } else {
                 var extra = "";
                 if (orders[i].DealAmount > 0) {
-                    extra = "³É½»: " + orders[i].DealAmount;
+                    extra = ": " + orders[i].DealAmount;
                 } else {
-                    extra = "Î´³É½»";
+                    extra = "";
                 }
                 e.SetDirection(orders[i].Type == ORDER_TYPE_BUY ? "buy" : "sell");
-                e.CancelOrder(orders[i].Id, orders[i].Type == ORDER_TYPE_BUY ? "Âòµ¥" : "Âôµ¥", extra);
+                e.CancelOrder(orders[i].Id, orders[i].Type == ORDER_TYPE_BUY ? "", extra);
                 dropped++;
             }
         }
@@ -76,13 +76,13 @@ function GetAccount(e, waitFrozen) {
         }
         if (!alreadyAlert) {
             alreadyAlert = true;
-            Log("·¢ÏÖÕË»§ÓÐ¶³½áµÄÇ®»ò±Ò", account);
+            Log("", account);
         }
         Sleep(Interval);
     }
-    msg = "³É¹¦: " + Counter.s + " ´Î, Ê§°Ü: " + Counter.f + " ´Î, µ±Ç°ÕË»§ ±Ò: " + account.Stocks;
+    msg = " " + Counter.s + "  " + Counter.f + " : " + account.Stocks;
     if (account.FrozenStocks > 0) {
-        msg += " ¶³½áµÄ±Ò: " + account.FrozenStocks;
+        msg += "  " + account.FrozenStocks;
     }
 
     if (msg != preMsg) {
@@ -204,9 +204,9 @@ function loop(pos) {
         tradeType = FirstTradeType;
         pos = Trade(exchange, tradeType, OpAmount, OpMode, SlidePrice, MaxSpace, Interval);
         if (!pos) {
-            throw "³öÊ¦²»Àû, ¿ª²ÖÊ§°Ü";
+            throw ";
         } else {
-            Log(tradeType == ORDER_TYPE_BUY ? "¿ª¶à²ÖÍê³É" : "¿ª¿Õ²ÖÍê³É", "¾ù¼Û:", pos.Price, "ÊýÁ¿:", pos.Amount);
+            Log(tradeType == ORDER_TYPE_BUY ? pos.Amount);
         }
     } else {
         tradeType = pos.Type;
@@ -230,7 +230,7 @@ function loop(pos) {
     }
 
     var coverId = null;
-    var msg = "³Ö²Ö¼Û: " + holdPrice + " Ö¹Ëð¼Û: " + reversePrice;
+    var msg = " + reversePrice;
 
     for (var i = 0; i < 10; i++) {
         if (coverId) {
@@ -249,7 +249,7 @@ function loop(pos) {
 
     if (!coverId) {
         StripOrders(exchange);
-        throw "ÏÂµ¥Ê§°Ü";
+        throw ";
     }
 
 
@@ -261,14 +261,14 @@ function loop(pos) {
             var coverAmount = coverFutures(exchange, tradeType);
             if (_Failed >= MaxLoss) {
                 Counter.f++;
-                Log("³¬¹ý×î´óÊ§°Ü´ÎÊý", MaxLoss);
+                Log("", MaxLoss);
                 break;
             }
             var reverseAmount = _N(coverAmount * ReverseRate, 4);
 
             var account = GetAccount(exchange, true);
             if (_N(account.Stocks * MarginLevel, 4) < reverseAmount) {
-                Log("Ã»ÓÐ±Ò·´ÊÖ¿ª²Ö, ÐèÒª¿ª²Ö: ", reverseAmount, "¸ö, Ö»ÓÐ", account.Stocks, "¸ö±Ò");
+                Log(";
                 Counter.f++;
                 break;
             }
@@ -278,7 +278,7 @@ function loop(pos) {
             }
             var pos = Trade(exchange, reverseType, reverseAmount, OpMode, SlidePrice, MaxSpace, Interval);
             if (pos) {
-                Log(reverseType == ORDER_TYPE_BUY ? "¶à²Ö" : "¿Õ²Ö", "¼Ó±¶¿ª²ÖÍê³É");
+                Log(reverseType == ORDER_TYPE_BUY ? "");
             }
             return pos;
         } else {
@@ -301,11 +301,11 @@ function onexit() {
 
 function main() {
     if (exchange.GetName().indexOf("796") == -1) {
-        throw "Ö»Ö§³Ö796ÆÚ»õ, ÏÖ»õÔÝ²»Ö§³Ö";
+        throw ;
     }
     EnableLogLocal(SaveLocal);
     if (exchange.GetRate() != 1) {
-        Log("ÒÑ½ûÓÃ»ãÂÊ×ª»»");
+        Log("");
         exchange.SetRate(1);
     }
 
@@ -322,14 +322,14 @@ function main() {
     SetErrorFilter("502:|503:|unexpected|network|timeout|WSARecv|Connect|GetAddr|no such|reset|http|received|EOF");
     StripOrders(exchange);
     OrgAccount = GetAccount(exchange, true);
-    LogStatus("Æô¶¯³É¹¦");
+    LogStatus(");
     var pos = null;
     var positions = GetPosition(exchange);
     if (positions.length == 1 && positions[0].MarginLevel == MarginLevel) {
         pos = positions[0];
-        Log("·¢ÏÖÒ»¸ö²ÖÎ», ÒÑ¾­×Ô¶¯»Ö¸´½ø¶È");
+        Log("");
     } else if (positions.length > 1) {
-        throw "·¢ÏÖ³Ö²Ö³¬¹ý1¸ö";
+        throw "ä¸ª";
     }
     while (true) {
         pos = loop(pos);
