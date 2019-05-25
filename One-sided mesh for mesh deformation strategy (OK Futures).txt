@@ -37,7 +37,7 @@ function balanceAccount(orgAccount, initAccount) {
             var positions = _C(exchange.GetPosition);
             if (positions.length === 0 ) {
                 var accountNow = _C(exchange.GetAccount);
-                LogProfit(_N(accountNow.Stocks - orgAccount.Stocks), "¿ÉÓÃ±£Ö¤½ð:", accountNow.Stocks);
+                LogProfit(_N(accountNow.Stocks - orgAccount.Stocks), "", accountNow.Stocks);
                 return;
             }
             for (var i = 0; i < positions.length; i++) {
@@ -69,7 +69,7 @@ function balanceAccount(orgAccount, initAccount) {
                 break;
             }
         }
-        Log("¿ªÊ¼Æ½ºâ", (diff > 0 ? "Âô³ö" : "ÂòÈë"), Math.abs(diff), "¸ö±Ò");
+        Log("", (diff > 0 ? " : "), Math.abs(diff), "");
         if (diff > 0) {
             exchange.Sell(price - 0.2, diff);
         } else {
@@ -79,7 +79,7 @@ function balanceAccount(orgAccount, initAccount) {
         cancelPending();
         account = _C(exchange.GetAccount);
     }
-    Log("Æ½ºâÍê³É", account);
+    Log("", account);
 }
 
 var STATE_WAIT_OPEN  = 0;
@@ -109,10 +109,10 @@ function isTimeout() {
 
 function onexit() {
     if (CancelAllWS) {
-        Log("ÕýÔÚÍË³ö, ³¢ÊÔÈ¡ÏûËùÓÐ¹Òµ¥");
+        Log("");
         cancelPending();
     }
-    Log("²ßÂÔ³É¹¦Í£Ö¹");
+    Log("");
     Log(_C(exchange.GetAccount));
 }
 
@@ -180,30 +180,30 @@ function fishing(orgAccount, fishCount) {
     }
     if (EnableProtectDiff) {
         if (BuyFirst && (FirstPrice - ticker.Sell) > ProtectDiff) {
-            throw "Ê×´ÎÂòÈë¼Û±ÈÊÐ³¡Âô1¼Û¸ß" + _N(FirstPrice - ticker.Sell) + ' Ôª';
+            throw "" + _N(FirstPrice - ticker.Sell) + ' ';
         } else if (!BuyFirst && (ticker.Buy - FirstPrice) > ProtectDiff) {
-            throw "Ê×´ÎÂô³ö¼Û±ÈÊÐ³¡Âò1¼Û¸ß " + _N(ticker.Buy - FirstPrice) + ' Ôª';
+            throw " " + _N(ticker.Buy - FirstPrice) + ' ';
         }
     }
     if (BuyFirst && !isFuture) {
         if (account.Balance < _N(needMoney)) {
             if (fishCount == 1) {
-                throw "×Ê½ð²»×ã, ÐèÒª"+ _N(needMoney) + "Ôª";
+                throw ""+ _N(needMoney) + ";
             } else {
-                Log("×Ê½ð²»×ã, ÐèÒª", _N(needMoney), "Ôª, ³ÌÐòÖ»×ö", canNum, "¸öÍø¸ñ #ff0000");
+                Log(ff0000");
             }
         } else {
-            Log('Ô¤¼Æ¶¯ÓÃ×Ê½ð: ', _N(needMoney), "Ôª");
+            Log(': ', _N(needMoney), "");
         }
     } else {
         if (account.Stocks < _N(needStocks)) {
             if (fishCount == 1) {
-                throw "±ÒÊý²»×ã, ÐèÒª "+ _N(needStocks) + " ¸ö±Ò";
+                throw ""+ _N(needStocks) + " ";
             } else {
-                Log("×Ê½ð²»×ã, ÐèÒª", _N(needStocks), "¸ö±Ò, ³ÌÐòÖ»×ö", canNum, "¸öÍø¸ñ #ff0000");
+                Log("", _N(needStocks), "", canNum, " #ff0000");
             }
         } else {
-            Log('Ô¤¼Æ¶¯ÓÃ±ÒÊý: ', _N(needStocks), "¸ö");
+            Log(': ', _N(needStocks), "ä¸ª");
         }
     }
 
@@ -215,8 +215,8 @@ function fishing(orgAccount, fishCount) {
     while (true) {
         var now = new Date();
         if (now.getTime() - ts.getTime() > 5000) {
-            if (typeof(GetCommand) == 'function' && GetCommand() == "ÊÕÍø") {
-                Log("¿ªÊ¼Ö´ÐÐÃüÁî½øÐÐÊÕÍø²Ù×÷");
+            if (typeof(GetCommand) == 'function' && GetCommand() == ") {
+                Log("");
                 balanceAccount(orgAccount, InitAccount);
                 return false;
             }
@@ -229,20 +229,20 @@ function fishing(orgAccount, fishCount) {
                 positions = _C(exchange.GetPosition);
                 isHold = positions.length > 0;
                 if (isHold) {
-                    msg += "³Ö²Ö: " + positions[0].Amount + " ³Ö²Ö¾ù¼Û: " + _N(positions[0].Price) + " ¸¡¶¯Ó¯¿÷: " + _N(positions[0].Profit);
+                    msg += " " + positions[0].Amount + " : " + _N(positions[0].Price) + " : " + _N(positions[0].Profit);
                     if (EnableStopLoss && -positions[0].Profit >= StopLoss) {
-                        Log("µ±Ç°¸¡¶¯Ó¯¿÷", positions[0].Profit, "¿ªÊ¼Ö¹Ëð");
+                        Log("", positions[0].Profit, "");
                         balanceAccount(orgAccount, InitAccount);
                         if (StopLossMode === 0) {
-                            throw "Ö¹ËðÍË³ö";
+                            throw "";
                         } else {
                             return true;
                         }
                     }
                 } else {
-                    msg += "¿Õ²Ö";
+                    msg += "";
                 }
-                msg += " ¿ÉÓÃ±£Ö¤½ð: " + nowAccount.Stocks;
+                msg += " : " + nowAccount.Stocks;
                 
             } else {
                 isHold = Math.abs(amount_diff) >= exchange.GetMinStock();
@@ -255,10 +255,10 @@ function fishing(orgAccount, fishCount) {
                 profitMax = Math.max(floatProfit, profitMax);
                 if (EnableStopLoss) {
                     if ((profitMax - floatProfit) >= StopLoss) {
-                        Log("µ±Ç°¸¡¶¯Ó¯¿÷", floatProfit, "ÀûÈó×î¸ßµã: ", profitMax, "¿ªÊ¼Ö¹Ëð");
+                        Log(");
                         balanceAccount(orgAccount, InitAccount);
                         if (StopLossMode === 0) {
-                            throw "Ö¹ËðÍË³ö";
+                            throw "";
                         } else {
                             return true;
                         }
@@ -278,11 +278,11 @@ function fishing(orgAccount, fishCount) {
                         hold_amount = -amount_diff;
                         hold_price = (money_diff) / -amount_diff;
                     }
-                    msg = (BuyFirst ? "×ö¶à: " : "×ö¿Õ: ") +  _N(hold_amount, 4) + " ¸ö±Ò, ¾ù¼Û: " + _N(hold_price);
+                    msg = (BuyFirst ? ": ") +  _N(hold_amount, 4) + ": " + _N(hold_price);
                 } else {
-                    msg += "¿Õ²Ö";
+                    msg += "";
                 }
-                msg += " µ±Ç°Íø¸ñ¸¡¶¯Ó¯¿÷: " + floatProfit + " ×Ü¸¡¶¯Ó¯¿÷: " + floatProfitAll + " µÚ " + fishCount + " ´ÎÈöÍø ×îÐÂ±Ò¼Û: " + _N(ticker.Last);
+                msg += "  " + floatProfit + " : " + floatProfitAll + " " + fishCount + " : " + _N(ticker.Last);
             }
             if (isHold) {
                 setBusy();
@@ -297,11 +297,11 @@ function fishing(orgAccount, fishCount) {
                 }
                 var refish = false;
                 if (!isHold && isTimeout()) {
-                    Log("¿Õ²Ö¹ý¾Ã, ¿ªÊ¼ÒÆ¶¯Íø¸ñ");
+                    Log("");
                     refish = true;
                 }
                 if (distance > MaxDistance) {
-                    Log("¼Û¸ñ³¬³öÍø¸ñÇø¼ä¹ý¶à, ¿ªÊ¼ÒÆ¶¯Íø¸ñ, µ±Ç°¾àÀë: ", _N(distance), "µ±Ç°¼Û¸ñ:", ticker.Last);
+                    Log(":", ticker.Last);
                     refish = true;
                 }
                 if (refish) {
@@ -311,7 +311,7 @@ function fishing(orgAccount, fishCount) {
             }
 
             if (AutoMove && distance > 0) {
-                msg += " (ÀëÍø¸ñ" + (BuyFirst ? "ÏòÉÏ" : "ÏòÏÂ") + "Æ«Àë: " + _N(distance) + " Ôª)";
+                msg += " ()";
             }
             if (msg != preMsg) {
                 LogStatus(msg);
@@ -332,11 +332,11 @@ function fishing(orgAccount, fishCount) {
             if (fishId != -1 && IsSupportGetOrder) {
                 var order = exchange.GetOrder(fishId);
                 if (!order) {
-                    Log("»ñÈ¡¶©µ¥ÐÅÏ¢Ê§°Ü, ID: ", fishId);
+                    Log(", ID: ", fishId);
                     continue;
                 }
                 if (order.Status == ORDER_STATE_PENDING) {
-                    Log("¶©µ¥×´Ì¬ÎªÎ´Íê³É, ID: ", fishId);
+                    Log(", ID: ", fishId);
                     continue;
                 }
             }
@@ -345,7 +345,7 @@ function fishing(orgAccount, fishCount) {
                 if (isFuture) {
                     exchange.SetDirection(BuyFirst ? "closebuy" : "closesell");
                 }
-                var coverId = CoverFunc(coverPrice, BuyFirst ? amountS : amountB, BuyFirst ? 'Íê³ÉÂòµ¥:' : 'Íê³ÉÂôµ¥:', openPrice);
+                var coverId = CoverFunc(coverPrice, BuyFirst ? amountS : amountB, BuyFirst ? ':', openPrice);
                 if (coverId > 0) {
                     fishTable[idx] = STATE_WAIT_CLOSE;
                     uuidTable[idx] = coverId;
@@ -361,9 +361,9 @@ function fishing(orgAccount, fishCount) {
                     if (state == STATE_WAIT_CLOSE) {
                         ProfitCount++;
                         if (AmountType === 0) {
-                            Log((BuyFirst ? 'Íê³ÉÂôµ¥: ' : 'Íê³ÉÂòµ¥: ') + coverPrice);
+                            Log((BuyFirst ? ' ') + coverPrice);
                         } else {
-                            Log((BuyFirst ? 'Íê³ÉÂôµ¥: ' : 'Íê³ÉÂòµ¥: ') + coverPrice);
+                            Log((BuyFirst ? ': ') + coverPrice);
                         }
                         if (!isFuture) {
                             var account = _C(exchange.GetAccount);
@@ -371,7 +371,7 @@ function fishing(orgAccount, fishCount) {
                             var initNet = _N(((InitAccount.Stocks + InitAccount.FrozenStocks) * ticker.Buy) + InitAccount.Balance + InitAccount.FrozenBalance, 8);
                             var nowNet = _N(((account.Stocks + account.FrozenStocks) * ticker.Buy) + account.Balance + account.FrozenBalance, 8);
                             var actualProfit = _N(((nowNet - initNet)) * 100 / initNet, 8);
-                            LogProfit(LastFloatProfit, "×Ü¸¡¶¯Ó¯¿÷ÂÊ:", _N(LastFloatProfit * 100 / actualNeedMondy, 4), '%');
+                            LogProfit(LastFloatProfit, ":", _N(LastFloatProfit * 100 / actualNeedMondy, 4), '%');
                         }
                     }
                 }
@@ -388,7 +388,7 @@ function main() {
     }
     IsSupportGetOrder = exchange.GetName().indexOf('itstamp') == -1;
     if (!IsSupportGetOrder) {
-        Log(exchange.GetName(), "²»Ö§³ÖGetOrder, ¿ÉÄÜÓ°Ïì²ßÂÔÎÈ¶¨ÐÔ.");
+        Log(exchange.GetName(), "");
     }
     
     isFuture = exchange.GetName().indexOf("Future") != -1;
@@ -397,13 +397,13 @@ function main() {
         SAmountOnce = AmountOnce;
     }
     if (exchange.GetName() == "Futures_OKCoin" && (AmountOnce.toString().indexOf(".") != -1 || BAmountOnce.toString().indexOf(".") != -1 || SAmountOnce.toString().indexOf(".") != -1)) {
-        throw "OKCoinÆÚ»õÏÂµ¥Êý±ØÐëÎªÕûÊý";
+        throw "";
     }
 
     SetErrorFilter("502:|503:|unexpected|network|timeout|WSARecv|Connect|GetAddr|no such|reset|http|received|refused|EOF|When");
 
     exchange.SetRate(1);
-    Log('ÒÑ¾­½ûÓÃ»ãÂÊ×ª»», µ±Ç°»õ±ÒÎª', exchange.GetBaseCurrency());
+    Log('', exchange.GetBaseCurrency());
 
     if (!RestoreProfit) {
         LastProfit = 0;
@@ -416,7 +416,7 @@ function main() {
             break;
         }
         fishCount++;
-        Log("µÚ", fishCount, "´ÎÖØÐÂÈöÍø...");
+        Log("", fishCount, "...");
         FirstPriceAuto = true;
         Sleep(1000);
     }
